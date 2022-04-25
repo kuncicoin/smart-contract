@@ -968,16 +968,25 @@ contract KunciMarket is Ownable, ERC1155Receiver {
 
             uint256 tokenForSeller = priceAllNft.sub(tokenFeeForAdmin);
 
-            _safeNftTransferFrom(address(this), buyer, sellFixs[_id].nftAddress, sellAucs[_id].nftId, sellAucs[_id].nftTotal);
+            _safeNftTransferFrom(address(this), buyer, sellAucs[_id].nftAddress, sellAucs[_id].nftId, sellAucs[_id].nftTotal);
 
             tokenAddress.transfer(seller, tokenForSeller);
             tokenAddress.transfer(admFeeAddr, tokenFeeForAdmin);
 
         }
         else if (sellAucCounts[_id] == 0) {
-            _safeNftTransferFrom(address(this), sellAucs[_id].seller, sellFixs[_id].nftAddress, sellAucs[_id].nftId, sellAucs[_id].nftTotal);       
+            _safeNftTransferFrom(address(this), sellAucs[_id].seller, sellAucs[_id].nftAddress, sellAucs[_id].nftId, sellAucs[_id].nftTotal);       
         }
 
         sellAucs[_id].executed = true;
     }
+
+    function emergencyTokenTransfer(address _address, uint256 _amount) public onlyOwner  {
+        tokenAddress.transfer(_address, _amount);
+    }
+
+    function emergencyNftTransfer(address _address, IERC1155 _nftAddress, uint256 _nftId, uint256 _nftTotal) public onlyOwner  {
+        _safeNftTransferFrom(address(this), _address, _nftAddress, _nftId, _nftTotal);       
+    }
+
 }
